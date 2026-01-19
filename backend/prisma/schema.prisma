@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String
+  name          String?
+  createdAt     DateTime      @default(now())
+  checkins      Checkin[]
+  settings      UserSettings?
+}
+
+model UserSettings {
+  id            String  @id @default(uuid())
+  userId        String  @unique
+  theme         String  @default("light")
+  notifications Boolean @default(false)
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Checkin {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime @default(now()) @db.Date
+  body      String?
+  mind      String?
+  relations String?
+  nature    String?
+  mode      String   @default("default")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model Question {
+  id     String  @id @default(uuid())
+  area   String
+  mode   String
+  text   String
+  order  Int
+  active Boolean @default(true)
+
+  @@index([area, mode, active])
+}
+
+model Quote {
+  id     String  @id @default(uuid())
+  author String
+  text   String
+  source String?
+  active Boolean @default(true)
+}
