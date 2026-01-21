@@ -1,9 +1,14 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { CheckinForm } from "@/components/checkin/CheckinForm";
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth-context';
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth-context";
 import { api } from "@/lib/api";
 import { Checkin } from "@/types";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function TodayPage() {
   const [checkin, setCheckin] = useState<Checkin | null>(null);
@@ -13,7 +18,7 @@ export default function TodayPage() {
 
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [user, authLoading, router]);
 
@@ -37,10 +42,11 @@ export default function TodayPage() {
   const handleSubmit = async (data: any) => {
     try {
       const result = await api.createCheckin(data);
+      const isUpdate = checkin !== null;
       setCheckin(result);
-      console.log("checkin saved");
+      toast.success(isUpdate ? "Check-in updated" : "Check-in saved");
     } catch (error: any) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -61,9 +67,14 @@ export default function TodayPage() {
 
   return (
     <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Harmony</h1>
-        <p className="text-muted-foreground mt-1">{today}</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Harmony</h1>
+          <p className="text-muted-foreground mt-1">{today}</p>
+        </div>
+        <Link href="/history">
+          <Button variant="outline">History</Button>
+        </Link>
       </div>
 
       <CheckinForm onSubmit={handleSubmit} initialData={checkin || undefined} />
