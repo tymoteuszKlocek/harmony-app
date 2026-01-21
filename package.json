@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A minimalist app for daily reflection on life quality.\r No gamification. No points. Just you.",
   "main": "index.js",
+  "private": true,
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
@@ -21,7 +22,7 @@
     "url": "https://github.com/tymoteuszKlocek/harmony-app/issues"
   },
   "homepage": "https://github.com/tymoteuszKlocek/harmony-app#readme",
-  "dependencies": {
-    "concurrently": "^9.2.1"
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }
